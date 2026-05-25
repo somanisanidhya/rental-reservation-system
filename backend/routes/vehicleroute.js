@@ -1,11 +1,12 @@
 const express=require("express");
 const router=express.Router();
 const protect=require("../middilware/authMiddleware");
-
-const {addvehicle,getvehicle,getvehiclebyid,deletevehiclebyid,updatevehiclebyid}=require("../controllers/vehicleController");
-router.post("/add",protect,addvehicle);
+const upload=require("../middilware/uploadMiddleware");
+const {addvehicle,getvehicle,getvehiclebyid,deletevehiclebyid,updatevehiclebyid,searchAvailableVehicles}=require("../controllers/vehicleController");
+router.post("/add",protect,upload.single("image"),addvehicle);
 router.get("/get",protect,getvehicle);
 router.get("/get/:id",protect,getvehiclebyid);
 router.delete("/delete/:id",protect,deletevehiclebyid);
-router.patch("/update/:id",protect,updatevehiclebyid);
+router.patch("/update/:id",protect,upload.single("image"),updatevehiclebyid);
+router.get( "/search",searchAvailableVehicles);
 module.exports=router;

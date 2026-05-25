@@ -46,4 +46,78 @@ const createReservation=async(req,res)=>{
         return res.status(500).json({message:error.message})
     }
 }
-module.exports={createReservation};
+const getUserReservations = async (req, res) => {
+
+    try {
+
+        const reservations =
+            await Reservation.find({
+
+                user: req.user.id
+
+            })
+            .populate("vehicle");
+
+        return res.status(200).json({
+            reservations
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+const cancelReservation = async (req, res) => {
+
+    try {
+
+        const reservation =
+            await Reservation.findById(req.params.id);
+
+        if (!reservation) {
+
+            return res.status(404).json({
+                message: "Reservation not found"
+            });
+
+        }
+
+        if (
+            reservation.user.toString()
+            !==
+            req.user.id
+        ) {
+
+            return res.status(401).json({
+                message: "Not authorized"
+            });
+
+        }
+
+        reservation.status = "cancelled";
+
+        await reservation.save();
+
+        return res.status(200).json({
+
+            message:
+            "Reservation cancelled",
+
+            reservation
+
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+module.exports={createReservation,getUserReservations,cancelReservation};
