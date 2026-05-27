@@ -2,19 +2,23 @@ const mongoose=require("mongoose");
 const vehicleSchema=new mongoose.Schema({
        title:{
         type:String,
-        required:true
-       },
+        required:true,
+        trim:true
+        },
         brand:{
         type:String,
-        required:true
+        required:true,
+        trim:true
        },
         type:{
         type:String,
-        required:true
+        required:true,
+        trim:true
        },
         pricePerDay:{
         type:Number,
-        required:true
+        required:true,
+        min:1
        },
         image:{
         type:String,

@@ -1,17 +1,23 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const bycrpt = require("bcryptjs");
-
+const validator =require("validator");
 const userregister = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { role,name, email, password } = req.body;
     const userexist = await User.findOne({ email });
     if (userexist) {
       return res.status(400).json({ message: "User already exist" });
     }
+   
+      if(!validator.isEmail(email)){
+        return res.status(400).json({message:"invalid email"})
+      }
+    
     const salt = await bycrpt.genSalt(10);
     const hashedpassword = await bycrpt.hash(password, salt);
     const user = await User.create({
+      role,
       name,
       email,
       password: hashedpassword,
@@ -35,13 +41,13 @@ const userlogin = async (req, res) => {
     }
     const token = jwt.sign(
       {
-        id: user._id,
+        id: userexist._id,
 
-        role: user.role,
+        role: userexist.role,
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "1d",
+        expiresIn: "7d",
       },
     );
     return res.status(200).json({ message: "login successfull", token });

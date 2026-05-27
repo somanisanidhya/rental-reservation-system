@@ -73,9 +73,7 @@ const deletevehiclebyid=async(req,res)=>{
             });
 
         }
-        if(vehicle.image){
-            fs.unlinkSync(vehicle.image);
-        }
+        
         await Vehicle.findByIdAndDelete(req.params.id);
           return res.status(200).json({message:"vehicle deleted",vehicle})
 
@@ -93,9 +91,7 @@ const updatevehiclebyid=async(req,res)=>{
             });
 
         }
-        if(req.file && vehicle.image && fs.existsSync(vehicle.image)){
-            fs.unlinkSync(vehicle.image);
-        }
+       
         vehicle.title=req.body.title || vehicle.title;
         vehicle.brand=req.body.brand || vehicle.brand;
         vehicle.type=req.body.type || vehicle.type;
@@ -106,7 +102,7 @@ const updatevehiclebyid=async(req,res)=>{
          vehicle.available=req.body.available || vehicle.available;
          await vehicle.save();
 
-          return res.status(200).json(vehicle)
+          return res.status(200).json({message:"vehicle updated",vehicle})
 
     } catch (error) {
         return res.status(500).json({message:error.message});
